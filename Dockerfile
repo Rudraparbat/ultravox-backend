@@ -9,7 +9,6 @@ RUN apt-get update -y \
 RUN ldconfig /usr/local/cuda-12.1/compat/
 
 
-
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
