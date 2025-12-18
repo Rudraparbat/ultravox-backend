@@ -1,10 +1,9 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, WebSocket
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 import numpy as np
-import torch
 import logging
 from src.utils.ultravoxmanager import AudioRingBuffer, UltraVoxManager
+from src.utils.vadmanager import VAD
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -55,9 +54,13 @@ async def ws(ws: WebSocket):
     logger.info("Connected with the websocket")
     await ws.accept()
 
-    buffer = AudioRingBuffer(max_samples=int(0.5 * 16000))  # 500 ms
-    SLIDE = int(0.15 * 16000)  # 150 ms
-    MIN_WINDOW = int(0.3 * 16000)  # 300 ms
+    buffer = AudioRingBuffer(max_samples=int(0.5 * 16000))  
+    SLIDE = int(0.15 * 16000)  
+    MIN_WINDOW = int(0.3 * 16000) 
+    vad = VAD()
+    speech_active = False
+    silence_ms = 0
+    last_text = ""
 
     try:
         while True:
@@ -68,19 +71,46 @@ async def ws(ws: WebSocket):
             audio = audio.astype(np.float32) / 32768.0
 
             buffer.add(audio)
-            logger.info("Add audio to buffer")
-            if len(buffer.buffer) >= MIN_WINDOW:
-                window_audio = buffer.get()
-                logger.info('invoke the audio to the model')
-                text = model_manager.infer_window(window_audio)
-                logger.info(f"Result recieved from ultravox {text}")
-                if text.strip():
-                    await ws.send_text(text)
+            if len(buffer.buffer) < MIN_WINDOW:
+                continue
 
-                buffer.slide(SLIDE)
+            window_audio = buffer.get()
 
-    except Exception as e :
-        ws.close()
-        raise ValueError(str(e))
+            has_speech = vad.is_speech(window_audio)
+
+            if not has_speech:
+                if speech_active:
+                    silence_ms += int(len(window_audio) / 16000 * 1000)
+
+                    if silence_ms >= 400:
     
+                        final_text = model_manager.finalize()
+                        if final_text.strip():
+                            await ws.send_text(final_text)
 
+                        # reset state
+                        buffer.reset()
+                        model_manager.reset()
+                        speech_active = False
+                        silence_ms = 0
+                        last_text = ""
+                continue
+
+    
+            speech_active = True
+            silence_ms = 0
+
+            text = model_manager.infer_window(window_audio)
+
+            if text and text != last_text:
+                await ws.send_text(text)
+                last_text = text
+
+            buffer.slide(SLIDE)
+
+    except WebSocketDisconnect:
+        logger.info("Client disconnected")
+
+    except Exception as e:
+        logger.error(f"WS error: {e}")
+        await ws.close()

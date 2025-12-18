@@ -19,7 +19,14 @@ class UltraVoxManager:
 
         self.model.eval()
 
+    def reset(self):
+        self.stream_state = None  # or recreate stream
 
+    def finalize(self):
+        if self.stream_state:
+            return self.model.finalize(self.stream_state)
+        return ""
+    
     def infer_window(self, audio_np):
         inputs = self.processor(
             audio=audio_np,
