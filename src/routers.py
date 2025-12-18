@@ -12,4 +12,4 @@ async def chat(system_prompt : str = Form(...),
     model_manager= get_model()
     logger.info(f"Model Recieved to router {model_manager}")
     logger.info(f"Invoke: {system_prompt[:50]}...")
-    return await model_manager.invoke_audio(system_prompt , audio_file.file)
+    return model_manager.invoke_audio(system_prompt , audio_file.file)
