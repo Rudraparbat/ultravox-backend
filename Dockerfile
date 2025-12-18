@@ -4,10 +4,10 @@ WORKDIR /app
 
 # Only the essentials – no giant apt install
 RUN apt-get update -y \
-    && apt-get install -y python3-pip
+    && apt-get install -y python3-pip python3-dev ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN ldconfig /usr/local/cuda-12.1/compat/
-
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
