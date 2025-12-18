@@ -13,8 +13,9 @@ class UltraVoxManager:
         self.model = AutoModel.from_pretrained(
             "fixie-ai/ultravox-v0_4",
             trust_remote_code=True,
+            device_map="auto",
             torch_dtype=torch.float16
-        ).cuda()
+        )
 
         self.model.eval()
 
