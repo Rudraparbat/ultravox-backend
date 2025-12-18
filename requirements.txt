@@ -32,3 +32,4 @@ packaging==24.2
 filelock==3.16.1
 psutil==6.1.0
 pyyaml==6.0.2
+silero-vad
