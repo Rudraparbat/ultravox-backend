@@ -15,7 +15,7 @@ class UltraVoxManager :
 
     def __load_model(self) :
         # load the model here
-        pipe = AutoModel.from_pretrained("fixie-ai/ultravox-v0_4", trust_remote_code=True, dtype="auto")
+        pipe = AutoModel.from_pretrained("fixie-ai/ultravox-v0_7-glm-4_6", trust_remote_code=True, dtype="auto")
         logger.info("Loaded Model Done")
         return pipe
 
