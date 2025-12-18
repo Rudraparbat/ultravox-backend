@@ -29,20 +29,19 @@ app.include_router(
     tags=['Ultravox']
 )
 
+@app.get("/ping")
+async def ping():
+    logger.info("Ping received - worker healthy!")
+    return {"ping": "pong"}
+
+
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
+    logger.info("Health check received!")
     return {
         "status": "healthy",
-        "model": "ultravox-v0_7-glm-4_6",
+        "model": "fixie-ai/ultravox-v0_4",
         "service": "ready"
     }
 
-@app.get("/")
-async def root():
-    """API Documentation"""
-    return {
-        "message": "Ultravox v0.7 API",
-        "endpoints": ["/api/v1/invoke", "/health"],
-        "docs": "/docs"
-    }
