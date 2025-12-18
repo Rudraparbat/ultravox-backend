@@ -1,45 +1,52 @@
-# pip install transformers peft librosa
-
-from fastapi import File, UploadFile
+from transformers import AutoModel, AutoProcessor
 import torch
-import transformers 
+import collections
 import numpy as np
-import librosa
-import logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
-class UltraVoxManager :
-
+class UltraVoxManager:
     def __init__(self):
-        self.pipe = self.__load_model()
+        self.processor = AutoProcessor.from_pretrained(
+            "fixie-ai/ultravox-v0_4",
+            trust_remote_code=True
+        )
 
-    def __load_model(self) :
-        # load the model here
-        logger.info("Loading Ultravox model...")
-        if not torch.cuda.is_available():
-            # check for gpu
-            raise RuntimeError("No GPU found!")
-        
-        pipe = transformers.pipeline(model='fixie-ai/ultravox-v0_4', trust_remote_code=True , device_map="auto")
-        logger.info("Loaded Model Done")
-        logger.info(f"Pipeline loaded on GPU: {pipe.device}")
-        logger.info("Loaded Model Done")
-        return pipe
+        self.model = AutoModel.from_pretrained(
+            "fixie-ai/ultravox-v0_4",
+            trust_remote_code=True,
+            torch_dtype=torch.float16
+        ).cuda()
+
+        self.model.eval()
 
 
-    def invoke_audio(self , prompt : str , audio_file : File) :
+    def infer_window(self, audio_np):
+        inputs = self.processor(
+            audio=audio_np,
+            sampling_rate=16000,
+            return_tensors="pt"
+        ).to("cuda")
 
-        # invoke the input for result
-        audio, sr = librosa.load(audio_file, sr=16000)
+        with torch.inference_mode():
+            out = self.model.generate(
+                **inputs,
+                max_new_tokens=30
+            )
 
-        turns = [
-        {
-            "role": "system",
-            "content": str(prompt)
-        },
-        ]
-        logger.info('Invoking the audio')
-        result =  self.pipe({'audio': audio, 'turns': turns, 'sampling_rate': sr}, max_new_tokens=30)
-        logger.info(f"invoked and recieved result {result}")
-        return {"response" : str(result)}
+        return self.processor.decode(out[0], skip_special_tokens=True)
+    
+
+
+class AudioRingBuffer:
+    def __init__(self, max_samples):
+        self.buffer = collections.deque(maxlen=max_samples)
+
+    def add(self, samples):
+        self.buffer.extend(samples)
+
+    def get(self):
+        return np.array(self.buffer, dtype=np.float32)
+
+    def slide(self, samples):
+        for _ in range(samples):
+            if self.buffer:
+                self.buffer.popleft()
