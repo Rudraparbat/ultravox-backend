@@ -40,6 +40,6 @@ class UltraVoxManager :
         },
         ]
         logger.info('Invoking the audio')
-        return self.pipe({'audio': audio, 'turns': turns, 'sampling_rate': sr}, max_new_tokens=30)
-
-
+        result =  self.pipe({'audio': audio, 'turns': turns, 'sampling_rate': sr}, max_new_tokens=30)
+        logger.info(f"invoked and recieved result {result}")
+        return {"response" : str(result)}

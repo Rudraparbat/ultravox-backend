@@ -1,12 +1,24 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.routers import router
+from src.models import init_model
 import logging
+from src.utils.ultravoxmanager import UltraVoxManager
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = FastAPI()
+
+model_manager = None
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    init_model()  # Load once
+    yield 
+    logger.info("Shutdown")
+
+    
+app = FastAPI(lifespan=lifespan)
 
 ALLOWED_ORIGINS = [
     "http://localhost",
