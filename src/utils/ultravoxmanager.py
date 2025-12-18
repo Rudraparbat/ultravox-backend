@@ -1,8 +1,7 @@
 # pip install transformers peft librosa
 
 from fastapi import File, UploadFile
-import torch
-from transformers import AutoModel
+import transformers 
 import numpy as np
 import librosa
 import logging
@@ -16,7 +15,7 @@ class UltraVoxManager :
 
     def __load_model(self) :
         # load the model here
-        pipe = AutoModel.from_pretrained("fixie-ai/ultravox-v0_7-glm-4_6", trust_remote_code=True, torch_dtype=torch.float16, device_map="auto"  )
+        pipe = transformers.pipeline(model='fixie-ai/ultravox-v0_4', trust_remote_code=True)
         logger.info("Loaded Model Done")
         return pipe
 
