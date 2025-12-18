@@ -3,7 +3,6 @@ from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 import numpy as np
 import torch
-from src.routers import router
 import logging
 from src.utils.ultravoxmanager import AudioRingBuffer, UltraVoxManager
 
@@ -31,11 +30,6 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 
-app.include_router(
-    router ,
-    prefix="/ultravox",
-    tags=['Ultravox']
-)
 
 @app.get("/ping")
 async def ping():
