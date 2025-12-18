@@ -13,9 +13,11 @@ logger = logging.getLogger(__name__)
 model_manager = None
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    init_model()  # Load once
-    yield 
-    logger.info("Shutdown")
+    logger.info("Lifespan: startup - calling init_model()")
+    init_model()
+    logger.info("Lifespan: startup complete")
+    yield
+    logger.info("Lifespan: shutdown")
 
     
 app = FastAPI(lifespan=lifespan)

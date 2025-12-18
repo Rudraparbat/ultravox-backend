@@ -9,6 +9,7 @@ router = APIRouter(prefix='/api/v1')
 async def chat(system_prompt : str = Form(...),
     audio_file: UploadFile = File(...)
     ) :
+    logger.info("Router: /invoke called")
     model_manager= get_model()
     logger.info(f"Model Recieved to router {model_manager}")
     logger.info(f"Invoke: {system_prompt[:50]}...")
