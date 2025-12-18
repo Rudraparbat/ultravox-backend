@@ -1,6 +1,7 @@
 # pip install transformers peft librosa
 
 from fastapi import File, UploadFile
+import torch
 import transformers 
 import numpy as np
 import librosa
@@ -15,7 +16,14 @@ class UltraVoxManager :
 
     def __load_model(self) :
         # load the model here
-        pipe = transformers.pipeline(model='fixie-ai/ultravox-v0_4', trust_remote_code=True)
+        logger.info("Loading Ultravox model...")
+        if not torch.cuda.is_available():
+            # check for gpu
+            raise RuntimeError("No GPU found!")
+        
+        pipe = transformers.pipeline(model='fixie-ai/ultravox-v0_4', trust_remote_code=True , device=0, device_map="auto")
+        logger.info("Loaded Model Done")
+        logger.info(f"Pipeline loaded on GPU: {pipe.device}")
         logger.info("Loaded Model Done")
         return pipe
 
