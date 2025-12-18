@@ -21,7 +21,7 @@ class UltraVoxManager :
             # check for gpu
             raise RuntimeError("No GPU found!")
         
-        pipe = transformers.pipeline(model='fixie-ai/ultravox-v0_4', trust_remote_code=True , device=0, device_map="auto")
+        pipe = transformers.pipeline(model='fixie-ai/ultravox-v0_4', trust_remote_code=True , device_map="auto")
         logger.info("Loaded Model Done")
         logger.info(f"Pipeline loaded on GPU: {pipe.device}")
         logger.info("Loaded Model Done")
