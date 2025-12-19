@@ -38,6 +38,11 @@ echo "🟢 Model: fixie-ai/ultravox-v0_5-llama-3_2-1b"
 echo "🟢 GPUs: $GPU_COUNT"
 echo "🟢 Ultravox Voice AI loading..."
 
+export TRITON_KERNEL_COMPILE_IMP=inductor
+export TORCH_COMPILE_DISABLE=1
+export VLLM_ATTENTION_BACKEND=FLASH_ATTN
+
+
 # Runpod vLLM (optimized for A100/H100)
 exec python -m vllm.entrypoints.openai.api_server \
     --model fixie-ai/ultravox-v0_5-llama-3_2-1b \
