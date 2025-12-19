@@ -1,20 +1,22 @@
-FROM nvidia/cuda:12.1.0-cudnn8-runtime-ubuntu22.04
+FROM vllm/vllm-openai:latest
 
-WORKDIR /app
+# HF token (use ARG for build-time secret)
+ARG HF_TOKEN
+ENV HF_TOKEN=$HF_TOKEN
 
-# Only the essentials – no giant apt install
-RUN apt-get update -y \
-    && apt-get install -y python3-pip python3-dev ffmpeg \
-    && rm -rf /var/lib/apt/lists/*
+# Pre-accept model license + trust remote code
+RUN hf auth login --token $HF_TOKEN && \
+    huggingface-cli accept-revoked-access && \
+    huggingface-cli accept-terms
 
-RUN ldconfig /usr/local/cuda-12.1/compat/
-
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY . .
-
-ENV PYTHONUNBUFFERED=1
+# Expose port
 EXPOSE 8000
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Healthcheck
+
+# Run Ultravox server
+CMD ["vllm", "serve", "fixie-ai/ultravox-v0_5-llama-3_2-1b", \
+     "--host", "0.0.0.0", \
+     "--port", "8000", \
+     "--trust-remote-code", \
+     "--max-model-len", "8192"]
