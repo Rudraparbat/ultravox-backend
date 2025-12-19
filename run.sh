@@ -43,10 +43,7 @@ export VLLM_USE_V1_ENGINE=1
 export VLLM_WORKER_MULTIPROC_METHOD=spawn
 export TORCH_COMPILE_DISABLE=1
 
-# Execute Server
-# 1. Removed --enforce-eager for 2x faster token generation via CUDA Graphs.
-# 2. Set --max-model-len 4096 to accommodate long audio sequences.
-# 3. Added --attention-backend flash_attn for RTX 4090 optimization.
+
 exec python -m vllm.entrypoints.openai.api_server \
     --model fixie-ai/ultravox-v0_5-llama-3_2-1b \
     --host 0.0.0.0 \
@@ -60,4 +57,7 @@ exec python -m vllm.entrypoints.openai.api_server \
     --attention-backend flash_attn \
     --enable-prefix-caching \
     --disable-log-stats \
-    --engine-use-ray=0
+    --engine-use-ray=0 \
+    --long-prefill-token-threshold 512 \
+    --no-disable-chunked-mm-input \
+    --stream-interval 1
