@@ -1,13 +1,10 @@
 FROM vllm/vllm-openai:latest
 
 # HF token (use ARG for build-time secret)
-ARG HF_TOKEN
-ENV HF_TOKEN=$HF_TOKEN
 
-# Pre-accept model license + trust remote code
-RUN hf auth login --token $HF_TOKEN && \
-    huggingface-cli accept-revoked-access && \
-    huggingface-cli accept-terms
+ARG HF_TOKEN
+ENV HUGGING_FACE_HUB_TOKEN=$HF_TOKEN
+
 
 # Expose port
 EXPOSE 8000
