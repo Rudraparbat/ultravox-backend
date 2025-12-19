@@ -1,4 +1,4 @@
-FROM vllm/vllm-openai:v0.6.1.post1-cu121
+FROM vllm/vllm-openai:latest-cu121
 
 # HF token (use ARG for build-time secret)
 
