@@ -27,7 +27,7 @@ echo "$HF_TOKEN"
 if [ -n "$HF_TOKEN" ]; then
     echo "🔐 Logging into Hugging Face..."
     HF_TOKEN_ENV=$(echo "$HF_TOKEN" | tr -d '\n')  # Clean token
-    huggingface-cli login auth login --token $HF_TOKEN
+    huggingface-cli login --token $HF_TOKEN
     echo "✅ Hugging Face authenticated"
 else
     echo "⚠️  No HF_TOKEN - public models only"
