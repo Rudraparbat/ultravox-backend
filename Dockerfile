@@ -1,16 +1,31 @@
-FROM vllm/vllm-openai:latest-cu121
+# syntax=docker/dockerfile:1
+FROM python:3.12-slim AS base
 
-# HF token (use ARG for build-time secret)
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_DEFAULT_TIMEOUT=100
 
-ARG HF_TOKEN
-ENV HUGGING_FACE_HUB_TOKEN=$HF_TOKEN
+WORKDIR /app
 
+# Install requirements first for better layer caching
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
-# Expose port
-EXPOSE 8000
+# Copy application code
+COPY . .
 
-# Healthcheck
+# Multi-stage: Copy only runtime essentials (slim builder pattern)
+FROM python:3.12-slim AS runtime
+COPY --from=base /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+COPY --from=base /usr/local/bin /usr/local/bin
+WORKDIR /app
+COPY --from=base /app .
 
-ENTRYPOINT ["vllm", "serve", "fixie-ai/ultravox-v0_5-llama-3_2-1b"]
-CMD ["--host", "0.0.0.0", "--port", "8000", \
-     "--trust-remote-code", "--max-model-len", "8192"]
+# Make shell script executable
+RUN chmod +x run.sh
+
+# Default command runs the shell script
+CMD ["./run.sh"]
