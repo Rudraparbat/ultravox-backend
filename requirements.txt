@@ -1,5 +1,5 @@
 # Core LLM Serving
-vllm==0.13.0
+vllm[audio]==0.13.0
 huggingface-hub
 
 

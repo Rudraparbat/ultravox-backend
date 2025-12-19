@@ -54,6 +54,7 @@ exec python -m vllm.entrypoints.openai.api_server \
     --port 8000 \
     --dtype bfloat16 \
     --max-model-len 2048 \
+    --limit-mm-per-prompt "audio=1" \
     --gpu-memory-utilization 0.85 \
     --max-num-seqs 256 \
     --block-size 16 \
