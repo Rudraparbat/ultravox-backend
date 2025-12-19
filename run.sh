@@ -51,7 +51,7 @@ exec python -m vllm.entrypoints.openai.api_server \
     --trust-remote-code \
     --dtype bfloat16 \
     --max-model-len 4096 \
-    --limit-mm-per-prompt "audio=1" \
+    --limit-mm-per-prompt '{"audio": 1}' \
     --gpu-memory-utilization 0.85 \
     --max-num-seqs 128 \
     --attention-backend flash_attn \
