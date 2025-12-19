@@ -38,28 +38,26 @@ echo "Model: fixie-ai/ultravox-v0_5-llama-3_2-1b"
 echo "GPUs: $GPU_COUNT"
 echo "Ultravox Voice AI loading..."
 
-export TRITON_KERNEL_COMPILE_IMP=inductor
-export TORCH_COMPILE_DISABLE=1
-export VLLM_ATTENTION_BACKEND=FLASH_ATTN
-export VLLM_WORKER_MULTIPROC_METHOD=spawn
-export CUDA_LAUNCH_BLOCKING=0
+
 export VLLM_USE_V1_ENGINE=1
-export VLLM_DISABLE_CUDAGRAPH_DECODER=False
+export VLLM_WORKER_MULTIPROC_METHOD=spawn
+export TORCH_COMPILE_DISABLE=1
 
-echo "=================== ULTRAVOX  ==================="
-
+# Execute Server
+# 1. Removed --enforce-eager for 2x faster token generation via CUDA Graphs.
+# 2. Set --max-model-len 4096 to accommodate long audio sequences.
+# 3. Added --attention-backend flash_attn for RTX 4090 optimization.
 exec python -m vllm.entrypoints.openai.api_server \
     --model fixie-ai/ultravox-v0_5-llama-3_2-1b \
     --host 0.0.0.0 \
     --port 8000 \
+    --trust-remote-code \
     --dtype bfloat16 \
-    --max-model-len 2048 \
+    --max-model-len 4096 \
     --limit-mm-per-prompt "audio=1" \
     --gpu-memory-utilization 0.85 \
-    --max-num-seqs 256 \
-    --block-size 16 \
-    --enforce-eager \
-    --swap-space 4 \
-    --engine-use-ray=0 \
+    --max-num-seqs 128 \
+    --attention-backend flash_attn \
+    --enable-prefix-caching \
     --disable-log-stats \
-    --trust-remote-code
+    --engine-use-ray=0
