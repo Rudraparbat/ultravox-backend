@@ -26,6 +26,7 @@ COPY --from=base /app .
 
 # Make shell script executable
 RUN chmod +x run.sh
+COPY .env* .env* 2>/dev/null || true
 
 # Default command runs the shell script
 CMD ["./run.sh"]
