@@ -41,11 +41,10 @@ echo "🟢 Ultravox Voice AI loading..."
 
 # Runpod vLLM (optimized for A100/H100)
 exec python -m vllm.entrypoints.openai.api_server \
-    --model "fixie-ai/ultravox-v0_5-llama-3_2-1b" \
+    --model fixie-ai/ultravox-v0_5-llama-3_2-1b \
     --host 0.0.0.0 \
     --port 8000 \
     --dtype bfloat16 \
     --max-model-len 4096 \
-    --gpu-memory-utilization 0.95 \
-    --trust-remote-code \
-    --enforce-eager
+    --gpu-memory-utilization 0.90 \
+    --trust-remote-code
