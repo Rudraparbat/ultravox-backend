@@ -23,13 +23,15 @@ fi
 export HF_TOKEN=${HF_TOKEN:-${RUNPOD_HF_TOKEN:-}}
 
 
-# Hugging Face login (CLI - NO GIT)
+# ✅ WORKING HF LOGIN (no git credentials)
 if [ -n "$HF_TOKEN" ]; then
-    echo "🔐 Logging into Hugging Face (no git)..."
-    huggingface-cli login --token "$HF_TOKEN" --no-git-credential
-    echo "✅ Hugging Face authenticated (session only)"
+    echo "🔐 Logging into Hugging Face..."
+    HF_TOKEN_ENV=$(echo "$HF_TOKEN" | tr -d '\n')  # Clean token
+    hf auth login --token $HF_TOKEN
+    echo "✅ Hugging Face authenticated"
+    hf auth whoami
 else
-    echo "⚠️  HF_TOKEN not set - public models only"
+    echo "⚠️  No HF_TOKEN - public models only"
 fi
 
 echo "=================== RUNPOD READY ==================="
