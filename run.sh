@@ -21,15 +21,14 @@ fi
 
 # Runpod env vars (overrides .env)
 export HF_TOKEN=${HF_TOKEN:-${RUNPOD_HF_TOKEN:-}}
-
+echo "$HF_TOKEN"
 
 # ✅ WORKING HF LOGIN (no git credentials)
 if [ -n "$HF_TOKEN" ]; then
     echo "🔐 Logging into Hugging Face..."
     HF_TOKEN_ENV=$(echo "$HF_TOKEN" | tr -d '\n')  # Clean token
-    hf auth login --token $HF_TOKEN
+    huggingface-cli login auth login --token $HF_TOKEN
     echo "✅ Hugging Face authenticated"
-    hf auth whoami
 else
     echo "⚠️  No HF_TOKEN - public models only"
 fi
