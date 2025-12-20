@@ -57,7 +57,7 @@ exec python -m vllm.entrypoints.openai.api_server \
     --attention-backend flash_attn \
     --enable-prefix-caching \
     --disable-log-stats \
-    --engine-use-ray=0 \
+    --distributed-executor-backend mp \
     --long-prefill-token-threshold 512 \
     --no-disable-chunked-mm-input \
     --stream-interval 1
