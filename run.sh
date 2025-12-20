@@ -45,7 +45,7 @@ export TORCH_COMPILE_DISABLE=1
 
 
 exec python -m vllm.entrypoints.openai.api_server \
-    --model fixie-ai/ultravox-v0_6-llama-3_1-8b \
+    --model fixie-ai/ultravox-v0_7-glm-4_6 \
     --host 0.0.0.0 \
     --port 8000 \
     --trust-remote-code \
