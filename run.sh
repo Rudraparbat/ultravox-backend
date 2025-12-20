@@ -60,4 +60,4 @@ exec python -m vllm.entrypoints.openai.api_server \
     --distributed-executor-backend mp \
     --long-prefill-token-threshold 512 \
     --no-disable-chunked-mm-input \
-    --stream-interval 0.05
+    --stream-interval 1
