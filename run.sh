@@ -49,15 +49,15 @@ exec python -m vllm.entrypoints.openai.api_server \
     --host 0.0.0.0 \
     --port 8000 \
     --trust-remote-code \
-    --dtype bfloat16 \
-    --max-model-len 4096 \
+    --dtype float16 \
+    --max-model-len 1024 \
     --limit-mm-per-prompt '{"audio": 1}' \
-    --gpu-memory-utilization 0.85 \
-    --max-num-seqs 128 \
+    --gpu-memory-utilization 0.95 \
+    --max-num-seqs 16 \
     --attention-backend flash_attn \
     --enable-prefix-caching \
     --disable-log-stats \
     --distributed-executor-backend mp \
     --long-prefill-token-threshold 512 \
     --no-disable-chunked-mm-input \
-    --stream-interval 1
+    --stream-interval 0.05
