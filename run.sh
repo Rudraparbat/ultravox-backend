@@ -34,7 +34,7 @@ else
 fi
 
 echo "=================== RUNPOD READY ==================="
-echo "Model: fixie-ai/ultravox-v0_5-llama-3_2-1b"
+echo "Model: fixie-ai/ultravox-v0_6-llama-3_1-8b"
 echo "GPUs: $GPU_COUNT"
 echo "Ultravox Voice AI loading..."
 
@@ -45,7 +45,7 @@ export TORCH_COMPILE_DISABLE=1
 
 
 exec python -m vllm.entrypoints.openai.api_server \
-    --model fixie-ai/ultravox-v0_5-llama-3_2-1b \
+    --model fixie-ai/ultravox-v0_6-llama-3_1-8b \
     --host 0.0.0.0 \
     --port 8000 \
     --trust-remote-code \
