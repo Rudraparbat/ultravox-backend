@@ -43,24 +43,21 @@ export VLLM_USE_V1_ENGINE=1
 export VLLM_WORKER_MULTIPROC_METHOD=spawn
 export TORCH_COMPILE_DISABLE=1
 
-# Enable LMCache
-export VLLM_KV_CACHE_ENGINE=LMCache
-export VLLM_KV_TRANSFER_CONFIG='{"kv_connector":"LMCacheConnectorV1","kv_role":"kv_both"}'
-
-exec python -m vllm.entrypoints.openai.api_server \
-    --model fixie-ai/ultravox-v0_5-llama-3_2-1b \
+exec vllm serve fixie-ai/ultravox-v0_5-llama-3_2-1b \
+    --kv-offloading-backend lmcache \
+    --kv-offloading-size 12 \
+    --disable-hybrid-kv-cache-manager \
     --host 0.0.0.0 \
     --port 8000 \
     --trust-remote-code \
     --dtype float16 \
     --max-model-len 1024 \
     --limit-mm-per-prompt '{"audio": 1}' \
-    --gpu-memory-utilization 0.95 \
+    --gpu-memory-utilization 0.85 \
     --max-num-seqs 16 \
     --attention-backend flash_attn \
     --enable-prefix-caching \
     --disable-log-stats \
-    --distributed-executor-backend mp \
     --long-prefill-token-threshold 512 \
     --no-disable-chunked-mm-input \
     --stream-interval 1
