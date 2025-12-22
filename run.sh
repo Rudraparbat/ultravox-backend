@@ -67,4 +67,3 @@ exec vllm serve fixie-ai/ultravox-v0_5-llama-3_2-1b \
     --no-disable-chunked-mm-input \
     --stream-interval 1 \
     --enable-chunked-prefill \
-    --max-prefill-tokens 4096
