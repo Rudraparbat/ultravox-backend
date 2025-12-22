@@ -53,11 +53,10 @@ exec vllm serve fixie-ai/ultravox-v0_5-llama-3_2-1b \
     --trust-remote-code \
     --dtype bfloat16 \
     --max-model-len 2048 \
-    --gpu-memory-utilization 0.70 \
+    --gpu-memory-utilization 0.75 \
     --max-num-seqs 4 \
     --enforce-eager \
-    --disable-log-stats \
-    --enable-prefix-caching \
-    --num-scheduler-steps 10 \
     --kv-cache-dtype auto \
-    --swap-space 1
+    --device cuda \
+    --swap-space 2 \
+    --disable-log-stats
