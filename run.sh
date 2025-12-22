@@ -44,26 +44,26 @@ export VLLM_WORKER_MULTIPROC_METHOD=spawn
 export TORCH_COMPILE_DISABLE=1
 export PYTHONHASHSEED=0
 
+# MAX LMCache
 export LMCACHE_CHUNK_SIZE=32
 export LMCACHE_LOCAL_CPU=True
 export LMCACHE_MAX_LOCAL_CPU_SIZE=12
+export LMCACHE_PRECACHING_HASH_ALGORITHM=builtin  # Fixed hash warning
 
 exec vllm serve fixie-ai/ultravox-v0_5-llama-3_2-1b \
     --kv-offloading-backend lmcache \
     --kv-offloading-size 12 \
     --disable-hybrid-kv-cache-manager \
-    --host 0.0.0.0 \
-    --port 8000 \
-    --trust-remote-code \
-    --dtype float16 \
+    --host 0.0.0.0 --port 8000 \
+    --trust-remote-code --dtype float16 \
     --max-model-len 1024 \
     --limit-mm-per-prompt '{"audio": 1}' \
     --gpu-memory-utilization 0.75 \
     --max-num-seqs 256 \
     --attention-backend flash_attn \
-    --enable-prefix-caching \
+    --disable-prefix-caching \        
     --disable-log-stats \
-    --long-prefill-token-threshold 128 \
+    --long-prefill-token-threshold 64 \  
     --no-disable-chunked-mm-input \
     --stream-interval 1 \
-    --enable-chunked-prefill \
+    --enable-chunked-prefill
