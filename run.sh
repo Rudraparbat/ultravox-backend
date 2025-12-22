@@ -61,9 +61,9 @@ exec vllm serve fixie-ai/ultravox-v0_5-llama-3_2-1b \
     --gpu-memory-utilization 0.75 \
     --max-num-seqs 256 \
     --attention-backend flash_attn \
-    --disable-prefix-caching \        
+    --enforce-eager \                    
     --disable-log-stats \
-    --long-prefill-token-threshold 64 \  
+    --long-prefill-token-threshold 64 \
     --no-disable-chunked-mm-input \
     --stream-interval 1 \
     --enable-chunked-prefill
