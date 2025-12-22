@@ -1,6 +1,6 @@
 # Core LLM Serving
 vllm[audio]==0.13.0
 huggingface-hub
-
+lmcache
 
 

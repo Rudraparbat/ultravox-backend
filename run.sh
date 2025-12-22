@@ -43,6 +43,9 @@ export VLLM_USE_V1_ENGINE=1
 export VLLM_WORKER_MULTIPROC_METHOD=spawn
 export TORCH_COMPILE_DISABLE=1
 
+# Enable LMCache
+export VLLM_KV_CACHE_ENGINE=LMCache
+export VLLM_KV_TRANSFER_CONFIG='{"kv_connector":"LMCacheConnectorV1","kv_role":"kv_both"}'
 
 exec python -m vllm.entrypoints.openai.api_server \
     --model fixie-ai/ultravox-v0_5-llama-3_2-1b \
