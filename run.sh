@@ -44,20 +44,20 @@ export VLLM_WORKER_MULTIPROC_METHOD=spawn
 export TORCH_COMPILE_DISABLE=1
 export PYTHONHASHSEED=0
 
+export OMP_NUM_THREADS=4 
+export MKL_NUM_THREADS=4
 
 exec vllm serve fixie-ai/ultravox-v0_5-llama-3_2-1b \
     --host 0.0.0.0 \
     --port 8000 \
     --trust-remote-code \
-    --dtype float16 \
-    --max-model-len 1024 \
-    --limit-mm-per-prompt '{"audio": 1}' \
-    --gpu-memory-utilization 0.95 \
-    --max-num-seqs 16 \
-    --attention-backend flash_attn \
-    --enable-prefix-caching \
+    --dtype bfloat16 \
+    --max-model-len 2048 \
+    --gpu-memory-utilization 0.70 \
+    --max-num-seqs 4 \
+    --enforce-eager \
     --disable-log-stats \
-    --distributed-executor-backend mp \
-    --long-prefill-token-threshold 512 \
-    --no-disable-chunked-mm-input \
-    --stream-interval 1
+    --enable-prefix-caching \
+    --num-scheduler-steps 10 \
+    --kv-cache-dtype auto \
+    --swap-space 1
