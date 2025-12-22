@@ -57,6 +57,5 @@ exec vllm serve fixie-ai/ultravox-v0_5-llama-3_2-1b \
     --max-num-seqs 4 \
     --enforce-eager \
     --kv-cache-dtype auto \
-    --device cuda \
     --swap-space 2 \
     --disable-log-stats
