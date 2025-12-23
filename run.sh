@@ -47,15 +47,20 @@ export PYTHONHASHSEED=0
 export OMP_NUM_THREADS=4 
 export MKL_NUM_THREADS=4
 
-exec vllm serve fixie-ai/ultravox-v0_5-llama-3_2-1b \
-    --host 0.0.0.0 \
-    --port 8000 \
-    --trust-remote-code \
-    --dtype bfloat16 \
-    --max-model-len 2048 \
-    --gpu-memory-utilization 0.75 \
-    --max-num-seqs 4 \
-    --enforce-eager \
-    --kv-cache-dtype auto \
-    --swap-space 2 \
-    --disable-log-stats
+vllm serve fixie-ai/ultravox-v0_5-llama-3_2-1b \
+  --host 0.0.0.0 \
+  --port 8000 \
+  --trust-remote-code \
+  --dtype bfloat16 \
+  --max-model-len 2048 \
+  --gpu-memory-utilization 0.9 \
+  --max-num-seqs 8 \
+  --enforce-eager \
+  --kv-cache-dtype fp8 \
+  --swap-space 0 \
+  --disable-log-stats \
+  --enable-chunked-prefill \
+  --max-prefill-tokens 1024 \
+  --disable-log-requests \
+  --verbose \
+  --quantization none
