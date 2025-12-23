@@ -51,16 +51,12 @@ vllm serve fixie-ai/ultravox-v0_5-llama-3_2-1b \
   --host 0.0.0.0 \
   --port 8000 \
   --trust-remote-code \
+  --quantization awq \
   --dtype bfloat16 \
-  --max-model-len 2048 \
-  --gpu-memory-utilization 0.9 \
-  --max-num-seqs 8 \
+  --max-model-len 1024 \
+  --gpu-memory-utilization 0.95 \
+  --max-num-seqs 16 \
   --enforce-eager \
-  --kv-cache-dtype fp8 \
   --swap-space 0 \
-  --disable-log-stats \
-  --enable-chunked-prefill \
-  --max-prefill-tokens 1024 \
-  --disable-log-requests \
-  --verbose \
-  --quantization none
+  --disable-log-stats
+
