@@ -46,7 +46,10 @@ export PYTHONHASHSEED=0
 
 export OMP_NUM_THREADS=4 
 export MKL_NUM_THREADS=4
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 
+
+CUDA_VISIBLE_DEVICES=0,1 \
 vllm serve fixie-ai/ultravox-v0_7-glm-4_6 \
   --host 0.0.0.0 \
   --port 8000 \
@@ -56,6 +59,7 @@ vllm serve fixie-ai/ultravox-v0_7-glm-4_6 \
   --gpu-memory-utilization 0.90 \
   --max-num-seqs 8 \
   --swap-space 16 \
+  --tensor-parallel-size 2 \
   --enforce-eager \
   --disable-log-stats
 
