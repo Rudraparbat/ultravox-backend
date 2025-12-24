@@ -47,7 +47,7 @@ export PYTHONHASHSEED=0
 export OMP_NUM_THREADS=4 
 export MKL_NUM_THREADS=4
 
-vllm serve fixie-ai/ultravox-v0_5-llama-3_2-1b \
+vllm serve fixie-ai/ultravox-v0_7-glm-4_6 \
   --host 0.0.0.0 \
   --port 8000 \
   --trust-remote-code \
