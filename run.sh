@@ -53,9 +53,10 @@ vllm serve fixie-ai/ultravox-v0_7-glm-4_6 \
   --trust-remote-code \
   --dtype bfloat16 \
   --max-model-len 1024 \
-  --gpu-memory-utilization 0.95 \
-  --max-num-seqs 32 \
+  --gpu-memory-utilization 0.90 \
+  --max-num-seqs 8 \
+  --swap-space 16 \
   --enforce-eager \
-  --swap-space 0 \
   --disable-log-stats
+
 
