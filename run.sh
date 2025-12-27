@@ -55,8 +55,8 @@ vllm serve fixie-ai/ultravox-v0_7-glm-4_6 \
   --port 8000 \
   --trust-remote-code \
   --dtype bfloat16 \
-  --max-model-len 1024 \
-  --gpu-memory-utilization 0.90 \
+  --max-model-len 512 \
+  --gpu-memory-utilization 0.80 \
   --max-num-seqs 8 \
   --swap-space 16 \
   --tensor-parallel-size 2 \
