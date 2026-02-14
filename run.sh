@@ -1,9 +1,6 @@
 #!/bin/bash
 set -e
 
-echo "Installing vLLM..."
-pip install --no-cache-dir "vllm[audio]"
-
 echo "Logging into Hugging Face..."
 huggingface-cli login --token $HF_TOKEN 
 
