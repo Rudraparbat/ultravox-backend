@@ -1,6 +1,10 @@
 #!/bin/bash
 set -e
 
+export TORCH_COMPILE_DISABLE=1
+export TORCHINDUCTOR_DISABLE=1
+export CUDA_MODULE_LOADING=LAZY
+
 echo "Logging into Hugging Face..."
 huggingface-cli login --token $HF_TOKEN 
 
