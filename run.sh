@@ -4,6 +4,7 @@ set -e
 export TORCH_COMPILE_DISABLE=1
 export TORCHINDUCTOR_DISABLE=1
 export CUDA_MODULE_LOADING=LAZY
+export VLLM_ATTENTION_BACKEND=FLASHINFER
 
 echo "Logging into Hugging Face..."
 huggingface-cli login --token $HF_TOKEN 
@@ -20,5 +21,4 @@ exec vllm serve google/gemma-3-27b-it \
   --enable-chunked-prefill \
   --enable-prefix-caching \
   --enforce-eager \
-  --trust-remote-code \
   --host 0.0.0.0 --port 8080
