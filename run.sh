@@ -4,9 +4,9 @@ set -e
 echo "Logging into HuggingFace..."
 huggingface-cli login --token $HF_TOKEN
 
-echo "Starting vLLM with fixie-ai/ultravox-v0_6-llama-3_1-8b..."
+echo "Starting vLLM with fixie-ai/ultravox-v0_6-gemma-3-27b..."
 
-exec vllm serve fixie-ai/ultravox-v0_6-llama-3_1-8b \
+exec vllm serve fixie-ai/ultravox-v0_6-gemma-3-27b \
   --gpu-memory-utilization 0.90 \
   --enforce-eager \
   --max-model-len 8192 \
