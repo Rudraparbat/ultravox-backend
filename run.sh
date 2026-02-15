@@ -10,7 +10,7 @@ huggingface-cli login --token $HF_TOKEN
 
 echo "Starting vLLM with google/gemma-3-27b-it..."
 
-exec vllm serve RedHatAI/gemma-3-27b-it-FP8-dynamic \
+exec vllm serve google/gemma-3-27b-it \
   --dtype bfloat16 \
   --tensor-parallel-size 1 \
   --gpu-memory-utilization 0.90 \
