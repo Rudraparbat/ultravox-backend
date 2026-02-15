@@ -1,14 +1,53 @@
 #!/bin/bash
 set -e
 
+# ─────────────────────────────────────────────
+# Auto-install FlashInfer if not present
+# ─────────────────────────────────────────────
+echo "Checking FlashInfer installation..."
+
+if ! python -c "import flashinfer" 2>/dev/null; then
+    echo "FlashInfer not found. Detecting torch + CUDA versions..."
+
+    TORCH_VERSION=$(python -c "import torch; v=torch.__version__; print('torch' + v[:3])")
+    CUDA_VERSION=$(python -c "import torch; v=torch.version.cuda; print('cu' + v.replace('.', '')[:4])")
+
+    echo "Detected: $TORCH_VERSION, $CUDA_VERSION"
+
+    FLASHINFER_URL="https://flashinfer.ai/whl/${CUDA_VERSION}/${TORCH_VERSION}/"
+    echo "Installing FlashInfer from: $FLASHINFER_URL"
+
+    pip install flashinfer-python -f "$FLASHINFER_URL" --quiet
+
+    # Verify install
+    if python -c "import flashinfer" 2>/dev/null; then
+        echo "FlashInfer installed successfully!"
+    else
+        echo "WARNING: FlashInfer install failed, falling back to TRITON_ATTN"
+        echo "You may hit known Gemma-3 crash issues"
+    fi
+else
+    FLASHINFER_VER=$(python -c "import flashinfer; print(flashinfer.__version__)")
+    echo "FlashInfer already installed: $FLASHINFER_VER"
+fi
+
+# ─────────────────────────────────────────────
+# Environment Variables
+# ─────────────────────────────────────────────
 export TORCH_COMPILE_DISABLE=1
 export TORCHINDUCTOR_DISABLE=1
 export CUDA_MODULE_LOADING=LAZY
 export VLLM_ATTENTION_BACKEND=FLASHINFER
 
+# ─────────────────────────────────────────────
+# HuggingFace Login
+# ─────────────────────────────────────────────
 echo "Logging into Hugging Face..."
-huggingface-cli login --token $HF_TOKEN 
+huggingface-cli login --token $HF_TOKEN
 
+# ─────────────────────────────────────────────
+# Start vLLM
+# ─────────────────────────────────────────────
 echo "Starting vLLM with google/gemma-3-27b-it..."
 
 exec vllm serve google/gemma-3-27b-it \
@@ -21,4 +60,5 @@ exec vllm serve google/gemma-3-27b-it \
   --enable-chunked-prefill \
   --enable-prefix-caching \
   --enforce-eager \
+  --trust-remote-code \
   --host 0.0.0.0 --port 8080
