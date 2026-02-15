@@ -17,12 +17,6 @@ huggingface-cli login --token $HF_TOKEN
 # ─────────────────────────────────────────────
 # Start vLLM
 # ─────────────────────────────────────────────
-echo "Starting vLLM with openai/whisper-large-v3-turbo.."
+echo "Starting vLLM with mistralai/Voxtral-Mini-4B-Realtime-2602.."
 
-exec vllm serve openai/whisper-large-v3-turbo \
-  --dtype bfloat16 \
-  --max-model-len 448 \
-  --max-num-seqs 128 \
-  --gpu-memory-utilization 0.85 \
-  --trust-remote-code \
-  --host 0.0.0.0 --port 8080
+exec vllm serve mistralai/Voxtral-Mini-4B-Realtime-2602 --enforce-eager 
